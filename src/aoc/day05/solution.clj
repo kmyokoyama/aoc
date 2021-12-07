@@ -52,5 +52,5 @@
 ;; Uncomment to solve the exercise. It may take a while.
 #_(def overlapping-points (->> input
                                ;;(filter #(or (horizontal? %) (vertical? %))) ;; Uncomment for first half.
-                               find-overlaps))
-                             ;;count))
+                               find-overlaps
+                               count))
