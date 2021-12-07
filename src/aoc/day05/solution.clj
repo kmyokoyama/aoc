@@ -1,61 +1,56 @@
-(ns aoc.day05.solution)
+(ns aoc.day05.solution
+  (:require [clojure.string :as string]
+            [clojure.set :as set]))
 
-(def input [[[0 9] [5 9]]
-            [[8 0] [0 8]]
-            [[9 4] [3 4]]
-            [[2 2] [2 1]]
-            [[7 0] [7 4]]
-            [[6 4] [2 0]]
-            [[0 9] [2 9]]
-            [[3 4] [1 4]]
-            [[0 0] [8 8]]
-            [[5 5] [8 2]]])
+(defn ->int
+  [s]
+  (Integer/parseInt s))
 
-(defn ->line
-  [[[x1 y1] [x2 y2]]]
-  (if (= x2 x1)
-    {:x x1}
-    (let [a (/ (- y2 y1) (- x2 x1))
-          b (- y1 (* a x1))]
-      {:a a :b b})))
-
-(defn horizontal?
-  [line]
-  (and (:a line) (zero? (:a line))))
+(defn read-input
+  [filepath]
+  (->> filepath
+       slurp
+       string/split-lines
+       (map (fn [line] (string/split line #" -> ")))
+       (map (fn [[p1 p2]] [(string/split p1 #",") (string/split p2 #",")]))
+       (map (fn [ps] (mapv (fn [[x y]] [(->int x) (->int y)]) ps)))
+       vec))
 
 (defn vertical?
-  [line]
-  (some? (:x line)))
+  [[[x1 y1] [x2 y2]]]
+  (and (= x1 x2) (not= y1 y2)))
 
-(defn x-or-y-constant?
-  [line]
-  (or (horizontal? line) (vertical? line)))
+(defn horizontal?
+  [[[x1 y1] [x2 y2]]]
+  (and (= y1 y2) (not= x1 x2)))
 
-(defn parallel?
-  [{a1 :a x1 :x} {a2 :a x2 :x}]
-  (or (and (some? a1) (some? a2) (= a1 a2))
-      (and (some? x1) (some? x2))))
+(defn points
+  [[[x1 y1] [x2 y2] :as segment]]
+  (cond (horizontal? segment) (map vector (range (min x1 x2) (inc (max x1 x2))) (repeat y1))
+        (vertical? segment) (map vector (repeat x1) (range (min y1 y2) (inc (max y1 y2))))
+        :else (map vector
+                   (if (< x1 x2) (range x1 (inc x2)) (range x1 (dec x2) -1))
+                   (if (< y1 y2) (range y1 (inc y2)) (range y1 (dec y2) -1)))))
 
-(defn cross-point
-  [line1 line2]
-  (when-not (parallel? line1 line2)
-    (if (horizontal? line1)
-      [(:x line2) (:b line1)]
-      [(:x line1) (:b line2)])))
+(defn overlap
+  [segment1 segment2]
+  (clojure.set/intersection (-> segment1 points set) (-> segment2 points set)))
 
-(defn find-cross-points
-  [lines]
-  (loop [i 0
-         j 1
+(defn find-overlaps
+  [segments]
+  (loop [i      0
+         j      1
          result #{}]
-    (if (= i (dec (count lines)))
+    (if (= i (dec (count segments)))
       (->> result (remove nil?) set)
-      (if (= j (dec (count lines)))
-        (recur (inc i) (-> i inc inc) (conj result (cross-point (nth lines i) (nth lines j))))
-        (recur i (inc j) (conj result (cross-point (nth lines i) (nth lines j))))))))
+      (if (= j (dec (count segments)))
+        (recur (inc i) (-> i inc inc) (set/union result (overlap (nth segments i) (nth segments j))))
+        (recur i (inc j) (set/union result (overlap (nth segments i) (nth segments j))))))))
 
-(def relevant-lines (->> input (map ->line) (filter x-or-y-constant?) vec))
+#_(def input (read-input "src/aoc/day05/input.txt"))
 
-(def answer (-> relevant-lines find-cross-points))
-
-(println answer)
+;; Uncomment to solve the exercise. It may take a while.
+#_(def overlapping-points (->> input
+                               ;;(filter #(or (horizontal? %) (vertical? %))) ;; Uncomment for first half.
+                               find-overlaps))
+                             ;;count))
