@@ -67,7 +67,7 @@
          drawns drawns]
     (let [marked-boards (map (partial mark (first drawns)) boards)]
       (if-let [winner-id (some winner? marked-boards)]
-        (->> marked-boards (filter #(= winner-id (:id %))) first ((partial score (first drawns))))
+        (->> marked-boards (filter #(= winner-id (:id %))) first (score (first drawns)))
         (recur marked-boards (rest drawns))))))
 
 (defn play-until-last-board-wins
