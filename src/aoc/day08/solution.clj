@@ -8,7 +8,7 @@
 
 ;; Part 1
 
-(def answer-part1 (->> patterns (mapcat second) (filter #(#{2 3 4 7} (count %))) count))
+(def answer-part1 (->> patterns (mapcat second) (map count) (filter #{2 3 4 7}) count))
 
 ;; Part 2
 
