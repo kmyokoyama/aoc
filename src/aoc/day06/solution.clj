@@ -22,7 +22,7 @@
                                            initial-state
                                            (range 256))))
 
-;; Naive approach:
+;; Naive approach (it will take forever):
 
 #_(def initial-state-naive (-> "src/aoc/day06/input.txt"
                                slurp
@@ -31,7 +31,6 @@
                                vec))
 
 #_(def total-fishes-naive (count (reduce (fn [old-state day]
-                                           (println "day:" (inc day))
                                            (let [[old-xs new-xs] (reduce (fn [[old-xs new-xs] x]
                                                                            [(conj old-xs (if (= x 0) 6 (dec x))) (if (= x 0) (conj new-xs 8) new-xs)])
                                                                          [[] []]
