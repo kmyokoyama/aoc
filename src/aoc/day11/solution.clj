@@ -1,10 +1,11 @@
 (ns aoc.day11.solution
-  (:require [clojure.set :as set]))
+  (:require [clojure.set :as set]
+            [clojure.string :as string]))
 
 (defn read-input
   [filepath]
-  (-> filepath slurp (clojure.string/split #"\n")
-      (->> (mapv (fn [r] (-> r (clojure.string/split #"") (->> (mapv #(Integer/parseInt %)))))))))
+  (->> filepath slurp (#(string/split % #"\n"))
+       (mapv (fn [r] (->> r (#(string/split % #"")) (mapv #(Integer/parseInt %)))))))
 
 (def indices (for [i (range 10) j (range 10)] [i j]))
 
@@ -63,8 +64,7 @@
 
 (defn solve-part2
   [m]
-  (loop [n 0
-         m* m]
+  (loop [n 0 m* m]
     (if (all-zero? m*)
       n
       (recur (inc n) (first (step m*))))))
