@@ -42,8 +42,8 @@
                                (map #(clojure.string/split % #""))
                                (apply map vector)
                                (map frequencies)) k)
-          most (if (and (= 2 (count oxy-freq-k)) (apply = (vals oxy-freq-k))) "1" (key (apply max-key val oxy-freq-k)))
-          least (if (and (= 2 (count co2-freq-k)) (apply = (vals co2-freq-k))) "0" (key (apply min-key val co2-freq-k)))
+          most (if (= (get oxy-freq-k "0") (get oxy-freq-k "1")) "1" (key (apply max-key val oxy-freq-k)))
+          least (if (= (get co2-freq-k "0") (get co2-freq-k "1")) "0" (key (apply min-key val co2-freq-k)))
           oxy-input* (filter #(= most (subs % k (inc k))) oxy-input)
           co2-input* (filter #(= least (subs % k (inc k))) co2-input)]
       (if (= 1 (count oxy-input*) (count co2-input*))
