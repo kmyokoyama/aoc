@@ -20,7 +20,7 @@
 
 (defn triangular
   [a b]
-  (reduce (fn [acc n] (+ acc n)) 0 (range (abs a b) 0 -1)))
+  (reduce + (range (inc (abs a b)))))
 
 (defn sum-dists
   [dist t coll]
