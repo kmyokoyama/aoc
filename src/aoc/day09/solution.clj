@@ -59,7 +59,7 @@
           to-visit-idx* (-> to-visit-idx (disj current) (into in-basin-idx))]
       (if (seq to-visit-idx*)
         (recur to-visit-idx* (into basin-idx in-basin-idx))
-        basin-idx))))
+        (into basin-idx in-basin-idx)))))
 
 (defn update-dim!
   [input]
