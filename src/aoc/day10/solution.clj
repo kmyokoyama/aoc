@@ -1,5 +1,8 @@
 (ns aoc.day10.solution)
 
+(def points {\) 3 \] 57 \} 1197 \> 25137})
+(def scores {\) 1 \] 2 \} 3 \> 4})
+
 (defn read-input
   [filepath]
   (-> filepath slurp clojure.string/split-lines))
@@ -32,7 +35,7 @@
                                       :ok acc
                                       :incomplete acc
                                       :corrupted (update acc ret inc))))
-                  {\) 0 \] 0 \} 0 \> 0}
+                  (zipmap [\) \] \} \>] (repeat 0))
                   input)))
 
 (defn complete
