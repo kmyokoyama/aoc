@@ -37,4 +37,4 @@
 
 (deftest part2-test
   "This may take a while"
-  (= 98441 (-> filepath day12/read-input day12/solve-part2)))
+  (is (= 98441 (-> filepath day12/read-input day12/solve-part2))))
